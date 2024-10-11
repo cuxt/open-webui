@@ -41,4 +41,5 @@ jobs:
       # 推送合并后的更改到主分支
       - name: Push changes
         run: |
-          git push origin main
+          git push https://${{ secrets.PAT }}@github.com/zhoubinxin/open-webui.git main
+      
