@@ -1,0 +1,42 @@
+name: Sync with upstream
+
+on:
+  schedule:
+    # 每天UTC时间凌晨2点执行
+    - cron: '0 2 * * *'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 检查仓库代码
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        # 获取完整的 Git 历史
+        fetch-depth: 0
+
+    # 设置 git 用户信息
+    - name: Set git user
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
+    # 添加上游仓库为 remote
+    - name: Add upstream
+      run: |
+        git remote add upstream https://github.com/open-webui/open-webui
+        git fetch upstream
+
+    # 合并上游更改，忽略 deploy-to-hf-spaces.yml
+    - name: Merge upstream changes
+      run: |
+        git merge upstream/main --no-commit --strategy-option=theirs || true
+        git restore --source=HEAD --staged --worktree .github/workflows/deploy-to-hf-spaces.yml
+        git commit -m "Merged upstream changes except .github/workflows/deploy-to-hf-spaces.yml" || true
+
+    # 推送合并后的更改到主分支
+    - name: Push changes
+      run: |
+        git push origin main
