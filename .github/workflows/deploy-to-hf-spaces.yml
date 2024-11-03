@@ -1,6 +1,9 @@
 name: Deploy to HuggingFace Spaces
 
 on:
+  schedule:
+    # 每天UTC时间凌晨2点执行
+    - cron: '0 2 * * *'
   push:
     branches:
       - dev
