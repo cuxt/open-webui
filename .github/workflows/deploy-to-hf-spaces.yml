@@ -31,6 +31,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          lfs: true # 启用 Git LFS 支持
 
       - name: Remove git history
         run: rm -rf .git
@@ -47,7 +49,6 @@ jobs:
           echo "---" >> temp_readme.md
           cat README.md >> temp_readme.md
           mv temp_readme.md README.md
-
       - name: Configure git
         run: |
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -55,7 +56,9 @@ jobs:
       - name: Set up Git and push to Space
         run: |
           git init --initial-branch=main
+          git lfs install # 初始化 Git LFS
           git lfs track "*.ttf"
+          git lfs track "*.jpg" # 添加对 .jpg 文件的跟踪规则
           rm demo.gif
           git add .
           git commit -m "GitHub deploy: ${{ github.sha }}"
