@@ -38,6 +38,9 @@ export default {
 			},
 			padding: {
 				'safe-bottom': 'env(safe-area-inset-bottom)'
+			},
+			transitionProperty: {
+				width: 'width'
 			}
 		}
 	},
